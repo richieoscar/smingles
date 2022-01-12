@@ -38,21 +38,29 @@ public class UserAccountController {
 
     @PostMapping("/user/add-interest")
     public UserInterest addUserInterest(@RequestBody UserInterest interest) {
-        Optional<UserAccount> optionalUserAccount = userAccountRepository.findById(interest.getUserId());
-        if (optionalUserAccount.isPresent()) {
-            UserAccount userAccount = optionalUserAccount.get();
-            interest.setUserAccount(userAccount);
-            return userInterestRepository.save(interest);
-        } else
-            throw new UserAccountNotFoundException(String.format("User Account with %d does not exist", interest.getUserId()));
+        try {
+            Optional<UserAccount> optionalUserAccount = userAccountRepository.findById(interest.getUserId());
+            if (optionalUserAccount.isPresent()) {
+                UserAccount userAccount = optionalUserAccount.get();
+                interest.setUserAccount(userAccount);
+                return userInterestRepository.save(interest);
+            } else
+                throw new UserAccountNotFoundException(String.format("User Account with %d does not found", interest.getUserId()));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
     @GetMapping("/user/get-user/{id}")
     public UserAccount getUserAccount(@PathVariable("id") int id) {
-        Optional<UserAccount> optionalUserAccount = userAccountRepository.findById(id);
-        if (optionalUserAccount.isPresent()) {
-            return optionalUserAccount.get();
-        } else throw new UserAccountNotFoundException(String.format("UserAccount with %d not found", id));
+        try {
+            Optional<UserAccount> optionalUserAccount = userAccountRepository.findById(id);
+            if (optionalUserAccount.isPresent()) {
+                return optionalUserAccount.get();
+            } else throw new UserAccountNotFoundException(String.format("UserAccount with %d not found", id));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
     @GetMapping("/users/get-all")
@@ -62,25 +70,35 @@ public class UserAccountController {
 
     @DeleteMapping("/user/interest/delete/{interestId}")
     public String deleteUserInterest(@PathVariable("interestId") int id) {
-        Optional<UserInterest> optionalUserInterest = userInterestRepository.findById(id);
-        if (optionalUserInterest.isPresent()) {
-            userInterestRepository.delete(optionalUserInterest.get());
-            return "User Interest Deleted Successfully";
-        } else throw new IllegalStateException(String.format("user interest with %d not found", id));
+        try {
+
+            Optional<UserInterest> optionalUserInterest = userInterestRepository.findById(id);
+            if (optionalUserInterest.isPresent()) {
+                userInterestRepository.delete(optionalUserInterest.get());
+                return "User Interest Deleted Successfully";
+            } else throw new IllegalStateException(String.format("user interest with %d not found", id));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
 
     }
 
     @GetMapping("/users/find-matches/{id}")
     public List<UserAccount> findMatches(@PathVariable("id") int id) {
-        Optional<UserAccount> optionalUserAccount = userAccountRepository.findById(id);
-        if (optionalUserAccount.isPresent()) {
-            UserAccount userAccount = optionalUserAccount.get();
-            return userAccountRepository.findMatches(
-                    userAccount.getAge(),
-                    userAccount.getCity(),
-                    userAccount.getCountry(),
-                    userAccount.getId()
-            );
-        } else throw new UserAccountNotFoundException(String.format("User account with %d not found", id));
+        try {
+
+            Optional<UserAccount> optionalUserAccount = userAccountRepository.findById(id);
+            if (optionalUserAccount.isPresent()) {
+                UserAccount userAccount = optionalUserAccount.get();
+                return userAccountRepository.findMatches(
+                        userAccount.getAge(),
+                        userAccount.getCity(),
+                        userAccount.getCountry(),
+                        userAccount.getId()
+                );
+            } else throw new UserAccountNotFoundException(String.format("User account with %d not found", id));
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 }
