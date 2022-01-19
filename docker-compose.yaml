@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  sminglesapi:
+    image: smingles:latest
+    build: .
+    container_name: smingle-app
+    restart: always
+    environment:
+      MYSQL_HOST: sminglesdb
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PORT: 3306
+    ports:
+      - "8080:8080"
+
+
+
+  sminglesservice:
+   image: mysql:latest
+   volumes:
+     - C:\Users\NAJCOM LAPTOP 4\Documents\sminglesdb:\var\lib\mysql
+   container_name: sminglesdb
+   environment:
+     MYSQL_ROOT_USER: root
+     MYSQL_ROOT_PASSWORD: password
+     MYSQL_DATABASE: sminglesdatabase
+   ports:
+     - "3307:3306"
+
+
