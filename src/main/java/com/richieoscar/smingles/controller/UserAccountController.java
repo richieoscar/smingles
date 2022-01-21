@@ -5,6 +5,7 @@ import com.richieoscar.smingles.entity.UserInterest;
 import com.richieoscar.smingles.exception.UserAccountNotFoundException;
 import com.richieoscar.smingles.repository.UserAccountRepository;
 import com.richieoscar.smingles.repository.UserInterestRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class UserAccountController {
@@ -29,6 +31,7 @@ public class UserAccountController {
 
     @PostMapping("/users/register-user")
     public UserAccount registerUser(@RequestBody UserAccount userAccount) {
+        log.info("Registering User");
         try {
             return userAccountRepository.save(userAccount);
         } catch (ConstraintViolationException e) {
