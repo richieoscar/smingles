@@ -3,6 +3,7 @@ version: '3.3'
 services:
   sminglesapi:
     image: smingles:latest
+    container_name: smingleapi
     build: .
     restart: always
     environment:
